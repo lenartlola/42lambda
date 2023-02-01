@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 import requests
 import os
+from fastapi.requests import Request
 
 from dotenv import load_dotenv
 
@@ -22,5 +23,14 @@ def get_access_token():
     return response.json()["access_token"]
 
 @router.get("/auth/callback")
-def get_callback():
-    return {"message": "Hello World"}
+def get_callback(request: Request):
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': os.getenv('CLIENT_ID'),
+        'client_secret': os.getenv('CLIENT_SECRET'),
+        'code': request.query_params["code"],
+        'redirect_uri': 'https://localhost:8000/v1/auth/callback'
+    }
+
+    response = requests.post('https://api.intra.42.fr/oauth/token', data=data)
+    return {"response": response.json(), "data": data}
