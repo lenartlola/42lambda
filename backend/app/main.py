@@ -6,7 +6,7 @@ import os
 
 from app.core.config import settings
 
-from v1 import auth, api
+from v1 import auth, api, user
 
 def get_application():
     _app = FastAPI(title=settings.PROJECT_NAME)
@@ -28,4 +28,4 @@ def get_application():
 
 
 app = get_application()
-app.include_router(auth.router)
+app.include_router(user.router)
